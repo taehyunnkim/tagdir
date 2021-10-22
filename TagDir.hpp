@@ -2,7 +2,8 @@
 #define TAGDIR_HPP
 #include <ncurses.h>
 
-inline const std::string DATA_FILE_NAME = ".tagdir";
+inline const std::string DATA_FILE_NAME = "/.tagdir/tagdir_data";
+inline const std::string SCRIPT_FILE_NAME = "/.tagdir/tagdir_cd";
 extern std::string data_path;
 
 void init();

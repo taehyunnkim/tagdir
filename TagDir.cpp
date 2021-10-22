@@ -9,6 +9,7 @@
 using namespace std;
 
 string data_path = "";
+string script_path = "";
 
 int main(int argc, char *argv[]) {
     try {
@@ -42,8 +43,15 @@ void init() {
         oss << home << "/" << DATA_FILE_NAME;
         data_path = oss.str();
 
-        const filesystem::path p(data_path);
-        if (!filesystem::exists(p)) ofstream { oss.str() };
+        oss.str("");
+
+        oss << home << "/" << SCRIPT_FILE_NAME;
+        script_path = oss.str();
+
+        filesystem::path p(data_path);
+        if (!filesystem::exists(p)) ofstream { data_path };
+        p = filesystem::path(script_path);
+        if (!filesystem::exists(p)) ofstream { script_path };
     } else {
         throw runtime_error("the home directory is not defined");
     }
@@ -114,7 +122,10 @@ tuple<bool, string> get_directory_with_tag(const char *tag) {
 void print_directory(const char *tag) {
     tuple<bool, string> result = get_directory_with_tag(tag);
     if (get<0>(result)) {
-        cout << get<1>(result) << endl;
+        ofstream fstr;
+        fstr.open(script_path, ios::app);
+        fstr << "cd " << get<1>(result) << endl;
+        fstr.close();
     } else {
         cout << "could not find a tag-directory pair" << endl;
     }
