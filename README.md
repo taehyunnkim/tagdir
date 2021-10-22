@@ -8,16 +8,16 @@ user@taehyunnkim:~$ ./install.sh
  
 ## Usage
 **Textbased UI**\
-`tg`
+`td`
  
 **Adding a bookmark**\
-`tg [TAG] [PATH TO DIRECTORY]`
+`td [TAG] [PATH TO DIRECTORY]`
  
 **Changing to the bookmarked directory**\
-`tg [TAG]`
+`td [TAG]`
  
 Example:
 ```console
-user@taehyunnkim:~$ tg nginx-log /var/log/nginx/
-user@taehyunnkim:~$ tg nginx-log
+user@taehyunnkim:~$ td nginx-log /var/log/nginx/
+user@taehyunnkim:~$ td nginx-log
 ```
