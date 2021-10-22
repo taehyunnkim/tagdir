@@ -1,4 +1,4 @@
-# Bookmark You Directories
+# :bookmark: tagdir
 A simple directory bookmarking tool for my machine using C++
  
 ## Installation
