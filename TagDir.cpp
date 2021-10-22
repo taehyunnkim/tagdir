@@ -81,8 +81,7 @@ void tag_directory(const char *tag, const char *dir) {
 string get_directory(const char *arg) {
     const filesystem::path p(arg);
     if (filesystem::exists(p) && filesystem::is_directory(p)) {
-        if (*arg == '.') return filesystem::current_path(); 
-        else return p;
+        return filesystem::canonical(p);
     } else {
         throw invalid_argument("no such directory");
     } 
