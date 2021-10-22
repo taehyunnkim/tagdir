@@ -56,9 +56,9 @@ void tag_directory(const char *tag, const char *dir) {
     fstr.open(data_path, ios::app);
     string line;
     
-    tuple<int, string> result = get_directory_with_tag(tag);
+    tuple<bool, string> result = get_directory_with_tag(tag);
 
-    if (get<0>(result) != -1) {
+    if (get<0>(result)) {
         cout << "pair already exists" << endl;
     } else {
         ostringstream oss;
@@ -80,36 +80,40 @@ string get_directory(const char *arg) {
     } 
 }
 
-tuple<int, string> get_directory_with_tag(const char *tag) {
+tuple<bool, string> get_directory_with_tag(const char *tag) {
     string queriedTag = tag;
     ifstream ifstr;
     ifstr.open(data_path);
 
     string line;
-    int line_number = -1;
+    bool tag_exists = false;
     string directory = "";
     
     while(ifstr >> line) {
-        line_number++;
         int split_index = line.find('=');
         string tag_in_line = line.substr(0, split_index);
 
         for (auto itr = tag_in_line.begin(), tagItr = queriedTag.begin(); itr != tag_in_line.end(); itr++, tagItr++) { 
             if (tagItr == queriedTag.end() || *itr != *tagItr) {
-                line_number = -1;
+                tag_exists = false;
                 break;
             }
+
+            tag_exists = true;
         }
 
-        if (line_number != 1) directory = line.substr(split_index+1);
+        if (tag_exists) {
+            directory = line.substr(split_index+1);
+            break;
+        }
     }
 
-    return make_tuple(line_number, directory);
+    return make_tuple(tag_exists, directory);
 }
 
 void print_directory(const char *tag) {
-    tuple<int, string> result = get_directory_with_tag(tag);
-    if (get<0>(result) != -1) {
+    tuple<bool, string> result = get_directory_with_tag(tag);
+    if (get<0>(result)) {
         cout << get<1>(result) << endl;
     } else {
         cout << "could not find a tag-directory pair" << endl;
