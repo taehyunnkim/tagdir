@@ -11,13 +11,16 @@ user@taehyunnkim:~$ ./install.sh
 `td`
  
 **Adding a bookmark**\
-`td [TAG] [PATH TO DIRECTORY]`
+`td add [TAG] [PATH TO DIRECTORY]`
+
+**Deleting a bookmark**\
+`td del [TAG]`
  
-**Changing to the bookmarked directory**\
+**Navigating to the bookmarked directory**\
 `td [TAG]`
  
 Example:
 ```console
-user@taehyunnkim:~$ td nginx-log /var/log/nginx/
+user@taehyunnkim:~$ td add nginx-log /var/log/nginx/
 user@taehyunnkim:~$ td nginx-log
 ```

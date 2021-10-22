@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <stdexcept>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <fstream>
 #include "TagDir.hpp"
@@ -10,6 +11,7 @@ using namespace std;
 
 string data_path = "";
 string script_path = "";
+string temp_path = "";
 
 int main(int argc, char *argv[]) {
     try {
@@ -23,7 +25,10 @@ int main(int argc, char *argv[]) {
                 print_directory(argv[1]);
                 break;
             case 3:
-                tag_directory(argv[1], argv[2]);
+                update_tagdir(argv[1], argv[2]);
+                break;
+            case 4:
+                update_tagdir(argv[1], argv[2], argv[3]);
                 break;
             default:
                 throw invalid_argument("supplied too many arguments");
@@ -48,6 +53,11 @@ void init() {
         oss << home << "/" << SCRIPT_FILE_NAME;
         script_path = oss.str();
 
+        oss.str("");
+
+        oss << home << "/" << TEMP_FILE_NAME;
+        temp_path = oss.str();
+
         filesystem::path p(data_path);
         if (!filesystem::exists(p)) ofstream { data_path };
         p = filesystem::path(script_path);
@@ -55,6 +65,54 @@ void init() {
     } else {
         throw runtime_error("the home directory is not defined");
     }
+}
+
+void update_tagdir(const char *action, const char *argx) {
+    string option(action);
+    
+    if (option == "del") {
+        delete_tag(argx);
+    } else {
+        throw invalid_argument("unknown argument was supplied");
+    }
+
+}
+
+void update_tagdir(const char *action, const char *argx, const char *argy) {
+    string option(action);
+    
+    if (option == "add") {
+        tag_directory(argx, argy); 
+    } else {
+        throw invalid_argument("unknown argument was supplied");
+    }
+}
+
+void delete_tag(const char *tag) {
+    ifstream ifstr;
+    ofstream ofstr;
+
+    ifstr.open(data_path);
+    ofstr.open(temp_path, ios::app);
+    
+    string queriedTag(tag);
+    string line;
+    while(ifstr >> line) {
+        int split_index = line.find('=');
+        string tag_in_line = line.substr(0, split_index);
+        
+        if (tag != tag_in_line) {
+            ofstr << line << endl;
+        }
+    }
+
+    ifstr.close();
+    ofstr.close();
+
+    remove(data_path.c_str());
+    rename(temp_path.c_str(), data_path.c_str());
+
+    cout << tag << " removed" << endl;
 }
 
 void tag_directory(const char *tag, const char *dir) {
@@ -88,7 +146,7 @@ string get_directory(const char *arg) {
 }
 
 tuple<bool, string> get_directory_with_tag(const char *tag) {
-    string queriedTag = tag;
+    string queriedTag(tag);
     ifstream ifstr;
     ifstr.open(data_path);
 
@@ -99,17 +157,9 @@ tuple<bool, string> get_directory_with_tag(const char *tag) {
     while(ifstr >> line) {
         int split_index = line.find('=');
         string tag_in_line = line.substr(0, split_index);
-
-        for (auto itr = tag_in_line.begin(), tagItr = queriedTag.begin(); itr != tag_in_line.end(); itr++, tagItr++) { 
-            if (tagItr == queriedTag.end() || *itr != *tagItr) {
-                tag_exists = false;
-                break;
-            }
-
+        
+        if (tag == tag_in_line) {
             tag_exists = true;
-        }
-
-        if (tag_exists) {
             directory = line.substr(split_index+1);
             break;
         }
