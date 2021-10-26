@@ -10,7 +10,7 @@ using namespace std;
 void display_ui() {
     WINDOW *menu_win, *menu_content;
     int width, height, startx, starty, padding;
-
+    
     // initialize
     initscr();
     cbreak();
@@ -23,25 +23,27 @@ void display_ui() {
 
     padding = 2;
     width = COLS/2;
-    height = 10;
+    height = LINES/4; 
     startx = (COLS - width) / 2;
     starty = (LINES - height) / 2;
     menu_win = newwin(height, width, starty, startx); // rows, cols, y, x
     box(menu_win, 0, 0);
-    
+
+    // TITLE
     wattron(menu_win, A_BOLD);
     wattron(menu_win, COLOR_PAIR(1));
     mvwprintw(menu_win, 0, padding, "TAGDIR");
     wattroff(menu_win, A_BOLD);
     wattroff(menu_win, COLOR_PAIR(1));
     
+    // MENU INSTRUCTIONS
     string instruction = "Press ENTER to navigate";
     mvwprintw(menu_win, 0, width - instruction.length() - padding, instruction.c_str());
     instruction = "Press SPACE to exit";
-    mvwprintw(menu_win, height-1, width - instruction.length() - padding, instruction.c_str());
-    
+    mvwprintw(menu_win, height-1, width - instruction.length() - padding, instruction.c_str()); 
     wrefresh(menu_win);
 
+    // MENU CONTENT
     menu_content = newwin(height-2*padding, width-2*padding, starty+padding, startx+padding); 
     keypad(menu_content, true);
   
@@ -51,7 +53,7 @@ void display_ui() {
     int ch;
     string selected_tag = "";
     int min = 0;
-    int max = 6;
+    int max = height - 2*padding;
     while (ch != ' ') {
         print_items(menu_content, min, max, selected_item, selected_tag);
         ch = wgetch(menu_content); // implicit refresh
@@ -59,19 +61,19 @@ void display_ui() {
         switch (ch) {
             case KEY_DOWN:
                 selected_item++;
-                if (selected_item == tagdirPairs.size()) { 
+                if (selected_item == tagdir_pairs.size()) { 
                     selected_item = 0;
                     min = 0;
-                    max = 6;
+                    max = height - 2*padding;
                 }
                 
                 break;
             case KEY_UP:
                 selected_item--;
                 if (selected_item == -1) { 
-                    selected_item = tagdirPairs.size()-1; 
-                    min = tagdirPairs.size()-max-1;
-                    max = tagdirPairs.size()-1;
+                    selected_item = tagdir_pairs.size()-1; 
+                    min = tagdir_pairs.size()-max-1;
+                    max = tagdir_pairs.size()-1;
                 }
 
                 break;
@@ -105,8 +107,8 @@ void print_items(WINDOW *win, int &min, int &max, int selected_item, string &sel
         max--;
     }
      
-    for(auto itr = tagdirPairs.begin(); itr != tagdirPairs.end() && start_row < max-min; itr++) {
-        int index = distance(tagdirPairs.begin(), itr);
+    for(auto itr = tagdir_pairs.begin(); itr != tagdir_pairs.end() && start_row < max-min; itr++) {
+        int index = distance(tagdir_pairs.begin(), itr);
     
         if (index < min) {
             continue;

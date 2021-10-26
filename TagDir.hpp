@@ -3,12 +3,13 @@
 #include <ncurses.h>
 #include <map>
 
-inline const std::string DATA_FILE_NAME = ".tagdir/tagdir_data";
-inline const std::string SCRIPT_FILE_NAME = ".tagdir/tagdir_cd";
-inline const std::string TEMP_FILE_NAME = ".tagdir/tagdir_temp";
+inline const std::string TAGDIR_HOME = ".tagdir";
+inline const std::string DATA_FILE_NAME = "tagdir_data";
+inline const std::string SCRIPT_FILE_NAME = "tagdir_cd";
+inline const std::string TEMP_FILE_NAME = "tagdir_temp";
 
 extern std::string data_path;
-extern std::map<std::string, std::string> tagdirPairs;
+extern std::map<std::string, std::string> tagdir_pairs;
 
 void init();
 void update_tagdir(const char*, const char *);

@@ -12,7 +12,7 @@ using namespace std;
 string data_path = "";
 string script_path = "";
 string temp_path = "";
-map<string, string> tagdirPairs;
+map<string, string> tagdir_pairs;
 
 int main(int argc, char *argv[]) {
     try {
@@ -46,17 +46,17 @@ void init() {
     const char *home = getenv("HOME");
     if (home) {
         ostringstream oss;
-        oss << home << "/" << DATA_FILE_NAME;
+        oss << home << "/" << TAGDIR_HOME << "/" <<  DATA_FILE_NAME;
         data_path = oss.str();
 
         oss.str("");
 
-        oss << home << "/" << SCRIPT_FILE_NAME;
+        oss << home << "/" << TAGDIR_HOME << "/" << SCRIPT_FILE_NAME;
         script_path = oss.str();
 
         oss.str("");
 
-        oss << home << "/" << TEMP_FILE_NAME;
+        oss << home << "/"  << TAGDIR_HOME << "/" << TEMP_FILE_NAME;
         temp_path = oss.str();
 
         filesystem::path p(data_path);
@@ -74,7 +74,7 @@ void init() {
             string tag = line.substr(0, split_index);
             string directory = line.substr(split_index+1);
 
-            tagdirPairs.insert(pair<string, string>(tag, directory));
+            tagdir_pairs.insert(pair<string, string>(tag, directory));
         }
 
         ifstr.close();
@@ -107,13 +107,13 @@ void update_tagdir(const char *action, const char *argx, const char *argy) {
 void delete_tag(const char *tag) {
     string queried_tag = tag;
     
-    if (tagdirPairs.find(queried_tag) == tagdirPairs.end()) {
+    if (tagdir_pairs.find(queried_tag) == tagdir_pairs.end()) {
         throw invalid_argument("the given tag does not exist");
     } else {
         ofstream ofstr;
         ofstr.open(temp_path, ios::app);
         
-        for (const auto& item : tagdirPairs) {
+        for (const auto& item : tagdir_pairs) {
             if (item.first != string(tag)) {
                 ofstr << item.first << "=" << item.second << endl;
             }
@@ -134,12 +134,12 @@ void tag_directory(const char *tag, const char *dir) {
     ofstream fstr;
     fstr.open(data_path, ios::app);
     
-    if (tagdirPairs.find(queriedTag) != tagdirPairs.end()) {
+    if (tagdir_pairs.find(queriedTag) != tagdir_pairs.end()) {
         cout << "pair already exists" << endl;
     } else {
         fstr << queriedTag << "=" << directory << endl;
         
-        tagdirPairs.insert(pair<string, string>(queriedTag, directory));
+        tagdir_pairs.insert(pair<string, string>(queriedTag, directory));
        
         cout << tag << " has been linked to " << directory << endl;  
     }
@@ -157,8 +157,8 @@ string get_directory(const char *arg) {
 }
 
 void write_command(const char *tag) {
-    auto itr = tagdirPairs.find(string(tag));
-    if (itr != tagdirPairs.end()) {
+    auto itr = tagdir_pairs.find(string(tag));
+    if (itr != tagdir_pairs.end()) {
         ofstream fstr;
         fstr.open(script_path, ios::app);
         fstr << "cd " << itr->second << endl;
