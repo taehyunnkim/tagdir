@@ -1,7 +1,12 @@
-# :bookmark: tagdir
-A simple directory bookmarking tool for my machine using C++
+<p align="center">
+  <img src="https://github.com/taehyunnkim/tagdir/blob/master/tagdir_intro.gif" alt="tagdir example"/>
+</p>
+
+<p align="center"> A simple directory bookmarking tool for my machine using C++ </p>
  
 ## Installation
+> :warning: the current build is unstable
+> 
 ```console
 user@taehyunnkim:~$ ./install.sh
 ```
