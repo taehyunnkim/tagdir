@@ -5,7 +5,7 @@
 <p align="center"> A simple directory bookmarking tool for my machine using C++ </p>
  
 ## Installation
-> :warning: the current build is unstable
+> :warning: the current build is unstable. it was only tested on x86-64
 > 
 ```console
 user@taehyunnkim:~$ ./install.sh
