@@ -105,20 +105,26 @@ void update_tagdir(const char *action, const char *argx, const char *argy) {
 }
 
 void delete_tag(const char *tag) {
-    ofstream ofstr;
-    ofstr.open(temp_path, ios::app);
+    string queried_tag = tag;
     
-    for (const auto& item : tagdirPairs) {
-        if (item.first != string(tag)) {
-            ofstr << item.first << "=" << item.second << endl;
+    if (tagdirPairs.find(queried_tag) == tagdirPairs.end()) {
+        throw invalid_argument("the given tag does not exist");
+    } else {
+        ofstream ofstr;
+        ofstr.open(temp_path, ios::app);
+        
+        for (const auto& item : tagdirPairs) {
+            if (item.first != string(tag)) {
+                ofstr << item.first << "=" << item.second << endl;
+            }
         }
-    }
 
-    ofstr.close();
-    remove(data_path.c_str());
-    rename(temp_path.c_str(), data_path.c_str());
+        ofstr.close();
+        remove(data_path.c_str());
+        rename(temp_path.c_str(), data_path.c_str());
 
-    cout << tag << " removed" << endl;
+        cout << tag << " removed" << endl; 
+    }    
 }
 
 void tag_directory(const char *tag, const char *dir) {
