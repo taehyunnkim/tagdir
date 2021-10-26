@@ -12,42 +12,41 @@ void display_ui() {
     int width, height, startx, starty, padding;
     
     // initialize
+    setlocale(LC_ALL, "");
     initscr();
     cbreak();
     noecho();
     curs_set(0);
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
-    wbkgd(stdscr, COLOR_PAIR(2));
     refresh();
 
     padding = 2;
     width = COLS/2;
-    height = LINES/4; 
+    height = LINES/3; 
     startx = (COLS - width) / 2;
     starty = (LINES - height) / 2;
-    menu_win = newwin(height, width, starty, startx); // rows, cols, y, x
+   
+    menu_win = newwin(height, width, starty, startx);
     box(menu_win, 0, 0);
 
     // TITLE
-    wattron(menu_win, A_BOLD);
-    wattron(menu_win, COLOR_PAIR(1));
-    mvwprintw(menu_win, 0, padding, "TAGDIR");
-    wattroff(menu_win, A_BOLD);
-    wattroff(menu_win, COLOR_PAIR(1));
+    wattron(menu_win, A_BOLD | COLOR_PAIR(1));
+    mvwaddstr(menu_win, 0, padding, "TAGDIR");
+    wattroff(menu_win, A_BOLD | COLOR_PAIR(1));
     
     // MENU INSTRUCTIONS
     string instruction = "Press ENTER to navigate";
-    mvwprintw(menu_win, 0, width - instruction.length() - padding, instruction.c_str());
+    mvwaddstr(menu_win, 0, width-instruction.length()-padding, instruction.c_str());
     instruction = "Press SPACE to exit";
-    mvwprintw(menu_win, height-1, width - instruction.length() - padding, instruction.c_str()); 
+    mvwaddstr(menu_win, height-1, width-instruction.length()-padding, instruction.c_str()); 
+    
     wrefresh(menu_win);
 
     // MENU CONTENT
     menu_content = newwin(height-2*padding, width-2*padding, starty+padding, startx+padding); 
     keypad(menu_content, true);
   
-    refresh();
 
     int selected_item = 0;
     int ch;
