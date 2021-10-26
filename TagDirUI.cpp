@@ -12,7 +12,7 @@ void display_ui() {
     int width, height, startx, starty, padding;
     
     // initialize
-    setlocale(LC_ALL, "");
+    setlocale(LC_CTYPE, "");
     initscr();
     cbreak();
     noecho();
@@ -22,8 +22,8 @@ void display_ui() {
     refresh();
 
     padding = 2;
-    width = COLS/2;
-    height = LINES/3; 
+    width = COLS/1.8;
+    height = LINES/1.8; 
     startx = (COLS - width) / 2;
     starty = (LINES - height) / 2;
    
@@ -54,7 +54,7 @@ void display_ui() {
     int min = 0;
     int max = height - 2*padding;
     while (ch != ' ') {
-        print_items(menu_content, min, max, selected_item, selected_tag);
+        print_items(menu_content, min, max, width-2*padding, selected_item, selected_tag);
         ch = wgetch(menu_content); // implicit refresh
         
         switch (ch) {
@@ -88,14 +88,14 @@ void display_ui() {
         wclear(menu_content);
     }
  
-    delwin(menu_win);
-    delwin(menu_content);
+    destroy_win(menu_win);
+    destroy_win(menu_content);
     endwin();
     
     if (!selected_tag.empty()) write_command(selected_tag.c_str());
 }
 
-void print_items(WINDOW *win, int &min, int &max, int selected_item, string &selected_tag) {
+void print_items(WINDOW *win, int &min, int &max, int max_cols, int selected_item, string &selected_tag) {
     int start_row = 0;
     
     if (selected_item > max-1) {
@@ -116,21 +116,19 @@ void print_items(WINDOW *win, int &min, int &max, int selected_item, string &sel
         string item = itr->first + " > " + itr->second;
         if (index == selected_item) {
             wattron(win, COLOR_PAIR(1) | A_BOLD); 
-            mvwprintw(win, start_row, 0, item.c_str());
+            mvwaddnstr(win, start_row, 0, item.c_str(), max_cols);
             wattroff(win, COLOR_PAIR(1) | A_BOLD); 
             selected_tag = itr->first;
         } else {
-            mvwprintw(win, start_row, 0, item.c_str());
+            mvwaddnstr(win, start_row, 0, item.c_str(), max_cols);
         }
 
         start_row++;
     }       
 }
 
-void print_centered_text(WINDOW *win, int start_row, string text) {
-    int win_center = win->_maxx / 2;
-    int text_half_length = text.length() / 2;
-    int adjusted = win_center - text_half_length;
-
-    mvwprintw(win, start_row, 2, text.c_str());
+void destroy_win(WINDOW *win) {
+        wborder(win, ' ', ' ', ' ',' ',' ',' ',' ',' ');
+        wrefresh(win);
+        delwin(win);
 }

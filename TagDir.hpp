@@ -20,6 +20,6 @@ void write_command(const char *);
 std::string get_directory(const char *);
 
 void display_ui();
-void print_items(WINDOW *, int &, int &, int, std::string &);
-void print_centered_text(WINDOW *, int, std::string);
+void print_items(WINDOW *, int &, int &, int, int, std::string &);
+void destroy_win(WINDOW *);
 #endif
