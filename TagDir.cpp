@@ -106,7 +106,7 @@ void update_tagdir(const char *action, const char *argx, const char *argy) {
 
 void delete_tag(const char *tag) {
     string queried_tag = tag;
-    
+ 
     if (tagdir_pairs.find(queried_tag) == tagdir_pairs.end()) {
         throw invalid_argument("the given tag does not exist");
     } else {
@@ -128,18 +128,20 @@ void delete_tag(const char *tag) {
 }
 
 void tag_directory(const char *tag, const char *dir) {
-    string queriedTag(tag);
+    string queried_tag(tag);
+    if (!is_alnum(queried_tag)) throw invalid_argument("tag must be alphanumeric!");
+
     string directory = get_directory(dir);
 
     ofstream fstr;
     fstr.open(data_path, ios::app);
     
-    if (tagdir_pairs.find(queriedTag) != tagdir_pairs.end()) {
+    if (tagdir_pairs.find(queried_tag) != tagdir_pairs.end()) {
         cout << "pair already exists" << endl;
     } else {
-        fstr << queriedTag << "=" << directory << endl;
+        fstr << queried_tag << "=" << directory << endl;
         
-        tagdir_pairs.insert(pair<string, string>(queriedTag, directory));
+        tagdir_pairs.insert(pair<string, string>(queried_tag, directory));
        
         cout << tag << " has been linked to " << directory << endl;  
     }

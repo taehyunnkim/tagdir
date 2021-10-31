@@ -22,4 +22,6 @@ std::string get_directory(const char *);
 void display_ui();
 void print_items(WINDOW *, int &, int &, int, int, std::string &);
 void destroy_win(WINDOW *);
+
+bool is_alnum(std::string &);
 #endif
